@@ -14,7 +14,8 @@ export let configureRoutes = (app) => {
         let item = new ItemSchema({
             title: req.body.title,
             quantity: req.body.quantity,
-            category: req.body.category,
+            category: req.body.category || null,
+            done: req.body.done || false,
         })
         
         try {
@@ -81,6 +82,22 @@ export let configureRoutes = (app) => {
         }
     })
 
+    router.delete("/deletedone", async (req, res) => {
+        try {
+            let items = await ItemSchema.find()
+
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].done === true) {
+                    await items[i].remove()
+                }
+            }
+
+            res.send("Items deleted successfully")
+        } catch(err) {
+            res.status(500).send(err)
+        }
+    })
+
     router.put("/update/:id", async (req, res) => {
         try {
             if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
@@ -102,6 +119,7 @@ export let configureRoutes = (app) => {
 
             item.title = req.body.title
             item.quantity = req.body.quantity
+            item.done = req.body.done
             
             console.log(req.body.category)
             if(req.body.category) {

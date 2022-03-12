@@ -15,6 +15,10 @@ let ItemSchema = new Schema({
         type: String,
         required: false,
     },
+    done: {
+        type: Boolean,
+        required: false,
+    }
 }, { collection: 'items' });
 
 export default mongoose.model('Item', ItemSchema)
