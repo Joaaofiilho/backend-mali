@@ -5,7 +5,6 @@ export let configureRoutes = (app) => {
     const router = express.Router()
 
     router.post("/create", async (req, res) => {
-        console.log("req.body: ", req.body)
         if (!req.body.title || !req.body.quantity) {
             res.status(400).send({message: "Title or quantity not provided"})
             return
@@ -19,8 +18,9 @@ export let configureRoutes = (app) => {
         })
         
         try {
-            await item.save()
-            res.send({message: "Item created successfully"})
+            //save item and send the item back
+            let savedItem = await item.save()
+            res.status(200).send(savedItem)
         } catch(err) {
             res.status(500).send(err)
         }
@@ -121,7 +121,6 @@ export let configureRoutes = (app) => {
             item.quantity = req.body.quantity
             item.done = req.body.done
             
-            console.log(req.body.category)
             if(req.body.category) {
                 item.category = req.body.category
             }
